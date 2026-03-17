@@ -3,11 +3,15 @@ import time
 import hmac
 import hashlib
 import numpy as np
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # --- API Configuration ---
 BASE_URL = "https://mock-api.roostoo.com"
-API_KEY = "4y6EVbS2YU5rsfJEKfUIJaCtjDLgqPsZL3qF5soEo5UlpYdMgrDAApCuMrBz2V42"  
-SECRET_KEY = "fZ0wXe6I31cblu5keg24Hq5guCf0wvaUUOtfbeFsyW23aBflffpt23aChFltDQzc" 
+API_KEY = os.getenv("ROOSTOO_API_KEY")
+SECRET_KEY = os.getenv("ROOSTOO_SECRET_KEY")
 
 
 # ------------------------------
