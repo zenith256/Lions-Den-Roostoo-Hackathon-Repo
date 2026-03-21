@@ -67,16 +67,16 @@ def send_tele(message):
         pass
 
 def get_balance():
-    url = f"{BASE_URL}/v3/balance"
-    headers, payload, _ = _get_signed_headers({})
     try:
+        url = f"{BASE_URL}/v3/balance"
+        headers, payload, _ = _get_signed_headers({})
         res = requests.get(url, headers=headers, params=payload)
-        res.raise_for_status()
-        return res.json()
-    except requests.exceptions.RequestException as e:
-        print(f"Error getting balance: {e}")
-        print(f"Response text: {e.response.text if e.response else 'N/A'}")
-        return None
+        data = res.json().get("Data", [])
+        if isinstance(data, list):
+            return {item['currency']: item['balance'] for item in data}
+        return data 
+    except:
+        return {}
 
 def get_ticker(pair):
     url = f"{BASE_URL}/v3/ticker"
