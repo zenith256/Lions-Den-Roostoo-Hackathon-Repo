@@ -64,10 +64,18 @@ def send_tele(message):
 
 def get_balance():
     try:
+        url = f"{BASE_URL}/v3/balance"
         headers, payload, _ = _get_signed_headers({})
-        res = requests.get(f"{BASE_URL}/v3/balance", headers=headers, params=payload)
+        res = requests.get(url, headers=headers, params=payload)
+        
+        # Check if the response is actually JSON
+        if res.status_code != 200:
+            print(f"!!! BALANCE ERROR: Status {res.status_code} | Text: {res.text[:100]}")
+            return {}
+            
         return res.json().get("Data", {})
-    except:
+    except Exception as e:
+        print(f"Balance Request Failed: {e}")
         return {}
 
 
