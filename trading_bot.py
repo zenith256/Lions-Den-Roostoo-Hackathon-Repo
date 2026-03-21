@@ -72,14 +72,11 @@ def get_balance():
     try:
         res = requests.get(url, headers=headers, params=payload)
         data = res.json()
-        
-        print(f"DEBUG - RAW WALLET DATA: {data}")
-        
-        return data.get("Wallet", {})
+
+        return data.get("SpotWallet", {})
     except Exception as e:
         print(f"Request Error: {e}")
         return {}
-
 
 def get_ticker(pair):
     url = f"{BASE_URL}/v3/ticker"
