@@ -17,7 +17,7 @@ ROOSTOO_SECRET_KEY = os.getenv("ROOSTOO_SECRET_KEY")
 TARGET_PAIR = "TRX/USD"
 
 # --- Telegram Configuration ---
-TELEGRAM_TOKEN = "YOUR_BOT_TOKEN_HERE"
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 TELEGRAM_CHAT_ID = "982514963"
 
 # --- Allocation Constants ---
