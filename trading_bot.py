@@ -71,12 +71,14 @@ def get_balance():
     headers, payload, _ = _get_signed_headers({})
     try:
         res = requests.get(url, headers=headers, params=payload)
-        res.raise_for_status()
-        return res.json()
-    except requests.exceptions.RequestException as e:
-        print(f"Error getting balance: {e}")
-        print(f"Response text: {e.response.text if e.response else 'N/A'}")
-        return None
+        data = res.json()
+        
+        print(f"DEBUG - RAW WALLET DATA: {data}")
+        
+        return data.get("Wallet", {})
+    except Exception as e:
+        print(f"Request Error: {e}")
+        return {}
 
 
 def get_ticker(pair):
@@ -165,14 +167,16 @@ def run_trading_bot():
             s_trend = df.rolling(200).mean().iloc[-1]
 
             # 2. Account State
-            bal = get_balance()
+            bal_data = get_balance()
 
-            usd_data = bal.get("USD", {})
-            usd_total = float(usd_data.get("Free", 0))
-            
-            asset_name = TARGET_PAIR.split("/")[0] 
-            asset_data = bal.get(asset_name, {})
-            asset_qty = float(asset_data.get("Free", 0))
+            usd_info = bal_data.get("USD", {})
+            usd_total = float(usd_info.get("Free", 0))
+
+            asset_name = TARGET_PAIR.split("/")[0]
+            trx_info = bal_data.get(asset_name, {})
+            asset_qty = float(trx_info.get("Free", 0))
+
+            print(f"--- CHECK: USD={usd_total} | TRX={asset_qty} ---")
             
             pos_val = asset_qty * current_p
 
