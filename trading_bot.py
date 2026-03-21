@@ -72,16 +72,11 @@ def get_balance():
     try:
         res = requests.get(url, headers=headers, params=payload)
         res.raise_for_status()
-        full_data = res.json()
+        data = res.json()
 
-        if "Data" in full_data:
-            balances = full_data["Data"]
-            if isinstance(balances, list):
-                return {item['asset']: item['free'] for item in balances}
-            return balances
-        return full_data
+        return data.get("Wallet", {})
     except Exception as e:
-        print(f"Balance Drill Error: {e}")
+        print(f"Balance Error: {e}")
         return {}
 
 def get_ticker(pair):
@@ -171,8 +166,14 @@ def run_trading_bot():
 
             # 2. Account State
             bal = get_balance()
-            usd_total = float(bal.get("USD", 0))
-            asset_qty = float(bal.get(TARGET_PAIR.split("/")[0], 0))
+
+            usd_data = bal.get("USD", {})
+            usd_total = float(usd_data.get("Free", 0))
+            
+            asset_name = TARGET_PAIR.split("/")[0] 
+            asset_data = bal.get(asset_name, {})
+            asset_qty = float(asset_data.get("Free", 0))
+            
             pos_val = asset_qty * current_p
 
             cancel_all_orders(TARGET_PAIR)
