@@ -77,11 +77,14 @@ def get_ticker(pair):
     if pair:
         params["pair"] = pair
     try:
-        res = requests.get(url, params=params)
-        res.raise_for_status()
+        res = requests.get(url, params=params, timeout=10)
+        # Check if we actually got a 200 OK before trying to read JSON
+        if res.status_code != 200:
+            print(f"Server Error: {res.status_code}")
+            return None
         return res.json()
-    except requests.exceptions.RequestException as e:
-        print(f"Error getting ticker: {e}")
+    except Exception as e:
+        print(f"Request failed: {e}")
         return None
 
 
@@ -123,15 +126,14 @@ def run_trading_bot():
         try:
             ticker = get_ticker(TARGET_PAIR)
             
-            # --- ADD THIS SAFETY CHECK ---
-            if ticker is None or "Data" not in ticker:
-                print("API Timeout/Error. Retrying in 10 seconds...")
+            # If ticker is None (because of the error you just saw), 
+            # skip this loop and wait 10 seconds.
+            if not ticker or "Data" not in ticker:
+                print("Invalid API response. Sleeping 10s...")
                 time.sleep(10)
                 continue 
-            # ------------------------------      
-            
+                
             current_p = float(ticker["Data"][TARGET_PAIR]["LastPrice"])
-            price_history.append(current_p)
 
             if len(price_history) < WINDOW:
                 print(f"Warm-up: {len(price_history)}/{WINDOW}")
