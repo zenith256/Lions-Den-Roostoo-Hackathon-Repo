@@ -66,20 +66,17 @@ def send_tele(message):
     except:
         pass
 
-
 def get_balance():
+    url = f"{BASE_URL}/v3/balance"
+    headers, payload, _ = _get_signed_headers({})
     try:
-        url = f"{BASE_URL}/v3/balance"
-        headers, payload, _ = _get_signed_headers({})
         res = requests.get(url, headers=headers, params=payload)
-        
-        if res.status_code != 200:
-            return {}
-
-        return res.json().get("SpotWallet", {}) 
-    except Exception as e:
-        print(f"Balance Request Failed: {e}")
-        return {}
+        res.raise_for_status()
+        return res.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error getting balance: {e}")
+        print(f"Response text: {e.response.text if e.response else 'N/A'}")
+        return None
 
 def get_ticker(pair):
     url = f"{BASE_URL}/v3/ticker"
