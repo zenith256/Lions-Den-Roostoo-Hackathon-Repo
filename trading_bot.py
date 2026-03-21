@@ -38,23 +38,18 @@ def _get_timestamp():
 
 
 def _get_signed_headers(payload: dict = {}):
-    params = payload.copy()
-    params['timestamp'] = _get_timestamp()
-
-    sorted_keys = sorted(params.keys())
-    total_params = "&".join(f"{k}={params[k]}" for k in sorted_keys)
+    payload["timestamp"] = _get_timestamp()
+    sorted_keys = sorted(payload.keys())
+    total_params = "&".join(f"{k}={payload[k]}" for k in sorted_keys)
 
     signature = hmac.new(
-        ROOSTOO_SECRET_KEY.encode('utf-8'), 
-        total_params.encode('utf-8'), 
-        hashlib.sha256
+        ROOSTOO_SECRET_KEY.encode("utf-8"), total_params.encode("utf-8"), hashlib.sha256
     ).hexdigest()
 
-    headers = {
-        'RST-API-KEY': ROOSTOO_API_KEY, 
-        'MSG-SIGNATURE': signature
-    }
-    return headers, params, total_params
+    headers = {"RST-API-KEY": ROOSTOO_API_KEY, "MSG-SIGNATURE": signature}
+
+    return headers, payload, total_params
+
 
 
 def send_tele(message):
