@@ -67,15 +67,21 @@ def send_tele(message):
         pass
 
 def get_balance():
+    url = f"{BASE_URL}/v3/balance"
+    headers, payload, _ = _get_signed_headers({})
     try:
-        url = f"{BASE_URL}/v3/balance"
-        headers, payload, _ = _get_signed_headers({})
         res = requests.get(url, headers=headers, params=payload)
-        data = res.json().get("Data", [])
-        if isinstance(data, list):
-            return {item['currency']: item['balance'] for item in data}
-        return data 
-    except:
+        res.raise_for_status()
+        full_data = res.json()
+
+        if "Data" in full_data:
+            balances = full_data["Data"]
+            if isinstance(balances, list):
+                return {item['asset']: item['free'] for item in balances}
+            return balances
+        return full_data
+    except Exception as e:
+        print(f"Balance Drill Error: {e}")
         return {}
 
 def get_ticker(pair):
