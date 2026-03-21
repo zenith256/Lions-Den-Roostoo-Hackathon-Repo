@@ -122,6 +122,14 @@ def run_trading_bot():
     while True:
         try:
             ticker = get_ticker(TARGET_PAIR)
+            
+            # --- ADD THIS SAFETY CHECK ---
+            if ticker is None or "Data" not in ticker:
+                print("API Timeout/Error. Retrying in 10 seconds...")
+                time.sleep(10)
+                continue 
+            # ------------------------------      
+            
             current_p = float(ticker["Data"][TARGET_PAIR]["LastPrice"])
             price_history.append(current_p)
 
