@@ -172,6 +172,7 @@ def run_trading_bot():
             pos_val = asset_qty * current_p
 
             cancel_all_orders(TARGET_PAIR)
+            time.sleep(1)
 
             # --- REGIME A: Mean Reversion  ---
             if hurst < 0.45:
@@ -185,6 +186,7 @@ def run_trading_bot():
                     order_val = (usd_total * REGIME_A_WEIGHT) / 6
                     for lvl in g_levels:
                         place_order(TARGET_PAIR, "BUY", order_val / lvl, price=lvl)
+                        time.sleep(0.5)
                 elif pos_val > (usd_total * 0.5):
                     if current_p >= exit_lvl:
                         place_order(TARGET_PAIR, "SELL", asset_qty, order_type="MARKET")
