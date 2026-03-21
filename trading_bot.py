@@ -24,7 +24,8 @@ TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 TELEGRAM_CHAT_ID = "982514963"
 
 # --- Allocation Constants ---
-WINDOW = 2
+WINDOW = 160
+WARM_UP_WINDOW = 40 + WINDOW
 REGIME_A_WEIGHT = 0.98
 REGIME_B_WEIGHT = 0.01
 LOOP_INTERVAL = 900
@@ -141,9 +142,9 @@ def run_trading_bot():
             
             price_history.append(current_p) 
 
-            if len(price_history) < WINDOW:
-                print(f"Warm-up: {len(price_history)}/{WINDOW} | Price: {current_p}")
-                time.sleep(2) # You can change this to 1 or 2 to warm up faster!
+            if len(price_history) < WARM_UP_WINDOW:
+                print(f"Warm-up: {len(price_history)}/{WARM_UP_WINDOW} | Price: {current_p}")
+                time.sleep(0.1) 
                 continue
 
             df = pd.Series(price_history)
