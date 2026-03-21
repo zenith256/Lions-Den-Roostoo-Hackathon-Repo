@@ -126,22 +126,21 @@ def run_trading_bot():
         try:
             ticker = get_ticker(TARGET_PAIR)
             
-            # If ticker is None (because of the error you just saw), 
-            # skip this loop and wait 10 seconds.
             if not ticker or "Data" not in ticker:
                 print("Invalid API response. Sleeping 10s...")
                 time.sleep(10)
                 continue 
                 
             current_p = float(ticker["Data"][TARGET_PAIR]["LastPrice"])
+            
+            price_history.append(current_p) 
 
             if len(price_history) < WINDOW:
-                print(f"Warm-up: {len(price_history)}/{WINDOW}")
-                time.sleep(5)
+                print(f"Warm-up: {len(price_history)}/{WINDOW} | Price: {current_p}")
+                time.sleep(5) # You can change this to 1 or 2 to warm up faster!
                 continue
 
             df = pd.Series(price_history)
-
             # 1. Indicator Calculations
             lp = np.log(df)
             v1 = (lp - lp.shift(2)).rolling(160).var().replace(0, 1e-8)
