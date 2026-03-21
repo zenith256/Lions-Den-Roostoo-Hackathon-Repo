@@ -19,7 +19,7 @@ TELEGRAM_TOKEN = "YOUR_BOT_TOKEN_HERE"
 TELEGRAM_CHAT_ID = "982514963"
 
 # --- Allocation Constants ---
-WINDOW = 160
+WINDOW = 2
 REGIME_A_WEIGHT = 0.98
 REGIME_B_WEIGHT = 0.01
 LOOP_INTERVAL = 900
@@ -38,18 +38,23 @@ def _get_timestamp():
 
 
 def _get_signed_headers(payload: dict = {}):
-    payload["timestamp"] = _get_timestamp()
-    sorted_params = "&".join(f"{k}={payload[k]}" for k in sorted(payload.keys()))
+    params = payload.copy()
+    params['timestamp'] = _get_timestamp()
+
+    sorted_keys = sorted(params.keys())
+    total_params = "&".join(f"{k}={params[k]}" for k in sorted_keys)
+
     signature = hmac.new(
-        ROOSTOO_SECRET_KEY.encode("utf-8"),
-        sorted_params.encode("utf-8"),
-        hashlib.sha256,
+        SECRET_KEY.encode('utf-8'), 
+        total_params.encode('utf-8'), 
+        hashlib.sha256
     ).hexdigest()
-    return (
-        {"RST-API-KEY": ROOSTOO_API_KEY, "MSG-SIGNATURE": signature},
-        payload,
-        sorted_params,
-    )
+
+    headers = {
+        'RST-API-KEY': API_KEY, 
+        'MSG-SIGNATURE': signature
+    }
+    return headers, params, total_params
 
 
 def send_tele(message):
