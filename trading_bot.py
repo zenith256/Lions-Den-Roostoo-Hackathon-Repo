@@ -45,7 +45,7 @@ def _get_signed_headers(payload: dict = {}):
     total_params = "&".join(f"{k}={params[k]}" for k in sorted_keys)
 
     signature = hmac.new(
-        SECRET_KEY.encode('utf-8'), 
+        ROOSTOO_SECRET_KEY.encode('utf-8'), 
         total_params.encode('utf-8'), 
         hashlib.sha256
     ).hexdigest()
