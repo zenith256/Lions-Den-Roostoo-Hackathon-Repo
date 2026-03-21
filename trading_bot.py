@@ -10,8 +10,9 @@ warnings.filterwarnings("ignore")
 
 # --- API Configuration ---
 BASE_URL = "https://mock-api.roostoo.com"
-ROOSTOO_API_KEY = "YOUR_API_KEY_HERE"
-ROOSTOO_SECRET_KEY = "YOUR_SECRET_KEY_HERE"
+ROOSTOO_API_KEY = os.getenv("ROOSTOO_API_KEY")
+ROOSTOO_SECRET_KEY = os.getenv("ROOSTOO_SECRET_KEY")
+
 TARGET_PAIR = "TRX/USD"
 
 # --- Telegram Configuration ---
