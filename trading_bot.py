@@ -73,16 +73,13 @@ def get_balance():
         headers, payload, _ = _get_signed_headers({})
         res = requests.get(url, headers=headers, params=payload)
         
-        # Check if the response is actually JSON
         if res.status_code != 200:
-            print(f"!!! BALANCE ERROR: Status {res.status_code} | Text: {res.text[:100]}")
             return {}
-            
-        return res.json().get("Data", {})
+
+        return res.json().get("SpotWallet", {}) 
     except Exception as e:
         print(f"Balance Request Failed: {e}")
         return {}
-
 
 def get_ticker(pair):
     url = f"{BASE_URL}/v3/ticker"
@@ -91,7 +88,6 @@ def get_ticker(pair):
         params["pair"] = pair
     try:
         res = requests.get(url, params=params, timeout=10)
-        # Check if we actually got a 200 OK before trying to read JSON
         if res.status_code != 200:
             print(f"Server Error: {res.status_code}")
             return None
