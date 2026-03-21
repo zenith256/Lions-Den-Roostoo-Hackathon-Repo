@@ -7,6 +7,7 @@ import numpy as np
 import warnings
 import os
 
+load_dotenv()
 warnings.filterwarnings("ignore")
 
 # --- API Configuration ---
