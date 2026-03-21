@@ -122,7 +122,7 @@ def run_trading_bot():
     while True:
         try:
             ticker = get_ticker(TARGET_PAIR)
-            current_p = float(ticker["lastPrice"])
+            current_p = float(ticker["Data"][TARGET_PAIR]["LastPrice"])
             price_history.append(current_p)
 
             if len(price_history) < WINDOW:
