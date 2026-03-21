@@ -72,12 +72,12 @@ def get_balance():
     try:
         res = requests.get(url, headers=headers, params=payload)
         res.raise_for_status()
-        data = res.json()
+        return res.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error getting balance: {e}")
+        print(f"Response text: {e.response.text if e.response else 'N/A'}")
+        return None
 
-        return data.get("Wallet", {})
-    except Exception as e:
-        print(f"Balance Error: {e}")
-        return {}
 
 def get_ticker(pair):
     url = f"{BASE_URL}/v3/ticker"
@@ -144,7 +144,7 @@ def run_trading_bot():
 
             if len(price_history) < WINDOW:
                 print(f"Warm-up: {len(price_history)}/{WINDOW} | Price: {current_p}")
-                time.sleep(5) # You can change this to 1 or 2 to warm up faster!
+                time.sleep(2) # You can change this to 1 or 2 to warm up faster!
                 continue
 
             df = pd.Series(price_history)
