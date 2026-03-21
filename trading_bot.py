@@ -51,7 +51,7 @@ def _get_signed_headers(payload: dict = {}):
     ).hexdigest()
 
     headers = {
-        'RST-API-KEY': API_KEY, 
+        'RST-API-KEY': ROOSTOO_API_KEY, 
         'MSG-SIGNATURE': signature
     }
     return headers, params, total_params
